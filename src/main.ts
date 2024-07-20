@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import 'winston-daily-rotate-file';
@@ -10,6 +10,10 @@ import {
 import * as winston from 'winston';
 import * as cors from 'cors';
 import { urlencoded, json } from 'express';
+import { HttpExceptionFilter } from './core/filters/httpException.filter';
+import { AllExceptionsFilter } from './core/filters/allExceptions.filter';
+import { ResponseTransformInterceptor } from './core/interceptors/response.transform.interceptor';
+import { GlobalErrorInterceptor } from './core/interceptors/globalError.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -84,6 +88,10 @@ async function bootstrap() {
   app.use(json({ limit: '30mb' }));
   app.use(urlencoded({ extended: true, limit: '30mb' }));
   app.use(cors());
+
+  const httpAdapterHost = app.get(HttpAdapterHost)
+  app.useGlobalInterceptors(new ResponseTransformInterceptor(),new GlobalErrorInterceptor());
+  // app.useGlobalFilters(new HttpExceptionFilter(), new AllExceptionsFilter(httpAdapterHost));
   await app.listen(3100);
 }
 bootstrap();
