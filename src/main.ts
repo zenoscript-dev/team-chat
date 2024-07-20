@@ -93,5 +93,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseTransformInterceptor(),new GlobalErrorInterceptor());
   // app.useGlobalFilters(new HttpExceptionFilter(), new AllExceptionsFilter(httpAdapterHost));
   await app.listen(3100);
+  
 }
 bootstrap();

@@ -1,6 +1,7 @@
 import { ExceptionFilter,Catch, Logger, ArgumentsHost, HttpStatus,HttpException } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
 
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter{
     private readonly logger = new Logger(AllExceptionsFilter.name);

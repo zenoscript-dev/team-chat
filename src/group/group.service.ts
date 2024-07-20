@@ -12,6 +12,7 @@ export class GroupService {
     @InjectRepository(Group) private groupRepo: Repository<Group>,
     private logger: Logger,
   ){}
+  
   async create(createGroupDto: CreateGroupDto) {
     this.logger.log(`create group ${JSON.stringify(createGroupDto)}`);
     try {

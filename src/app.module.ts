@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GroupModule } from './group/group.module';
 import { Group } from './group/entities/group.entity';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
