@@ -19,7 +19,10 @@ export class GroupService {
       return this.groupRepo.save(newGroup);
     } catch (error) {
       this.logger.error(error.message);
-      throw new Error(error);
+      throw new HttpException(
+        error.message,
+        error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -35,16 +38,16 @@ export class GroupService {
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(
-        error,
+        error.message,
         error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     this.logger.log(`find group by id ${id}`);
     try {
-      const result = await this.groupRepo.findOneBy({ id });
+      const result = await this.groupRepo.findOneBy({id});
       if (result) {
         return result;
       } else {
@@ -53,13 +56,13 @@ export class GroupService {
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(
-        error,
+        error.message,
         error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async update(id: number, updateGroupDto: UpdateGroupDto) {
+  async update(id: string, updateGroupDto: UpdateGroupDto) {
     this.logger.log(
       `update group by id ${id} with ${JSON.stringify(updateGroupDto)}`,
     );
@@ -68,6 +71,7 @@ export class GroupService {
       if (result) {
         result.name = updateGroupDto.name;
         result.createdBy = updateGroupDto.createdBy;
+        // result.updatedBy = updateGroupDto.updatedBy; -- do after auth
         return this.groupRepo.save(result);
       } else {
         throw new HttpException('Group does not exists', HttpStatus.NOT_FOUND);
@@ -75,25 +79,25 @@ export class GroupService {
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(
-        error,
+        error.message,
         error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     this.logger.log(`delete group by id ${id}`);
     try {
-      const result = await this.groupRepo.findOneBy({ id });
+      const result = await this.groupRepo.findOne({ where: { id } });
       if (result) {
-        await this.groupRepo.delete(result);
+        await this.groupRepo.delete({id});
       } else {
         throw new HttpException('Group does not exists', HttpStatus.NOT_FOUND);
       }
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException(
-        error,
+        error.message,
         error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

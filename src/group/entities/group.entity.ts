@@ -1,16 +1,21 @@
-import {PrimaryGeneratedColumn, Column, Entity, Index} from 'typeorm';
+import { Base } from 'src/core/models/base.model';
+import { User } from 'src/users/entities/user.entity';
+import {PrimaryGeneratedColumn, Column, Entity, Index, OneToOne, JoinColumn} from 'typeorm';
 
 
 @Entity()
-export class Group {
-    @PrimaryGeneratedColumn()
-    @Index()
-    id: number;
+export class Group extends Base{
+    @PrimaryGeneratedColumn('uuid')
+    @Index('IDX_GROUP_ID')
+    id: string;
 
     @Column({nullable: false, unique: true})
     name: string;
 
-    @Index()
+
+    @Index('IDX_GROUP_CREATEDBY')
+    @OneToOne(() => User)
+    @JoinColumn({ name: 'createdBy' })
     @Column({nullable: false})
     createdBy: string;
 
