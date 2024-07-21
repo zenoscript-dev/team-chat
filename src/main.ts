@@ -90,8 +90,8 @@ async function bootstrap() {
   app.use(cors());
 
   const httpAdapterHost = app.get(HttpAdapterHost)
-  app.useGlobalInterceptors(new ResponseTransformInterceptor(),new GlobalErrorInterceptor());
-  // app.useGlobalFilters(new HttpExceptionFilter(), new AllExceptionsFilter(httpAdapterHost));
+  app.useGlobalInterceptors(new ResponseTransformInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter(),new AllExceptionsFilter(httpAdapterHost));
   await app.listen(3100);
   
 }

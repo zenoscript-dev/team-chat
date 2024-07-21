@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { UpdateGroupDto } from './dto/updateGroup.dto';
@@ -10,12 +10,16 @@ export class GroupController {
 
   @Post()
   create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupService.create(createGroupDto);
+      return this.groupService.create(createGroupDto);
   }
 
   @Get()
   findAll() {
     return this.groupService.findAll();
+  }
+  @Get()
+  getAllGroupsForUser(@Query() userId: string) {
+    //implement after doing user group assignment api
   }
 
   @Get(':id')

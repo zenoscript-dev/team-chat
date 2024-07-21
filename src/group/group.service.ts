@@ -5,37 +5,97 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from './entities/group.entity';
 import { Repository } from 'typeorm';
 
-
 @Injectable()
 export class GroupService {
   constructor(
     @InjectRepository(Group) private groupRepo: Repository<Group>,
     private logger: Logger,
-  ){}
-  
+  ) {}
+
   async create(createGroupDto: CreateGroupDto) {
     this.logger.log(`create group ${JSON.stringify(createGroupDto)}`);
     try {
       const newGroup = this.groupRepo.create(createGroupDto);
       return this.groupRepo.save(newGroup);
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      this.logger.error(error.message);
+      throw new Error(error);
     }
   }
 
-  findAll() {
-    return `This action returns all group`;
+  async findAll() {
+    this.logger.log('fetch all groups');
+    try {
+      const result = await this.groupRepo.find();
+      if (result && result.length > 0) {
+        return result;
+      } else {
+        throw new HttpException('No groups found', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(
+        error,
+        error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} group`;
+  async findOne(id: number) {
+    this.logger.log(`find group by id ${id}`);
+    try {
+      const result = await this.groupRepo.findOneBy({ id });
+      if (result) {
+        return result;
+      } else {
+        throw new HttpException('Group does not exists', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(
+        error,
+        error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  update(id: number, updateGroupDto: UpdateGroupDto) {
-    return `This action updates a #${id} group`;
+  async update(id: number, updateGroupDto: UpdateGroupDto) {
+    this.logger.log(
+      `update group by id ${id} with ${JSON.stringify(updateGroupDto)}`,
+    );
+    try {
+      const result = await this.groupRepo.findOneBy({ id });
+      if (result) {
+        result.name = updateGroupDto.name;
+        result.createdBy = updateGroupDto.createdBy;
+        return this.groupRepo.save(result);
+      } else {
+        throw new HttpException('Group does not exists', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(
+        error,
+        error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} group`;
+  async remove(id: number) {
+    this.logger.log(`delete group by id ${id}`);
+    try {
+      const result = await this.groupRepo.findOneBy({ id });
+      if (result) {
+        await this.groupRepo.delete(result);
+      } else {
+        throw new HttpException('Group does not exists', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new HttpException(
+        error,
+        error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

@@ -7,7 +7,7 @@ export class Group {
     @Index()
     id: number;
 
-    @Column({nullable: false})
+    @Column({nullable: false, unique: true})
     name: string;
 
     @Index()
