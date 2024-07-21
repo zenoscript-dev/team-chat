@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { GroupModule } from './group/group.module';
 import { Group } from './group/entities/group.entity';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
 
 
 @Module({
@@ -17,10 +19,11 @@ import { Group } from './group/entities/group.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Group],
+      entities: [Group,User],
       synchronize: true,
     }),
     GroupModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

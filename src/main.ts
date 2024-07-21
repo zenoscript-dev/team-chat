@@ -14,6 +14,8 @@ import { HttpExceptionFilter } from './core/filters/httpException.filter';
 import { AllExceptionsFilter } from './core/filters/allExceptions.filter';
 import { ResponseTransformInterceptor } from './core/interceptors/response.transform.interceptor';
 import { GlobalErrorInterceptor } from './core/interceptors/globalError.interceptor';
+import { ValidationPipe } from '@nestjs/common';
+import { DbExceptionFilter } from './core/filters/dbException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -91,7 +93,13 @@ async function bootstrap() {
 
   const httpAdapterHost = app.get(HttpAdapterHost)
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
-  app.useGlobalFilters(new HttpExceptionFilter(),new AllExceptionsFilter(httpAdapterHost));
+  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new DbExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true, transformOptions: {
+      enableImplicitConversion: true,
+    }
+  }));
   await app.listen(3100);
   
 }
