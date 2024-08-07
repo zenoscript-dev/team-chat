@@ -1,4 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
 
@@ -14,7 +20,11 @@ export class DbExceptionFilter implements ExceptionFilter {
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
     // Check if exception has a driverError property with code
-    if (exception.driverError && typeof exception.driverError === 'object' && 'code' in exception.driverError) {
+    if (
+      exception.driverError &&
+      typeof exception.driverError === 'object' &&
+      'code' in exception.driverError
+    ) {
       const driverError = exception.driverError as { code: string };
 
       // Determine the specific error message and status code based on the error

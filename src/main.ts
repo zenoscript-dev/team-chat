@@ -91,16 +91,18 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '30mb' }));
   app.use(cors());
 
-  const httpAdapterHost = app.get(HttpAdapterHost)
+  const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
   // app.useGlobalFilters(new DbExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, transformOptions: {
-      enableImplicitConversion: true,
-    }
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
   await app.listen(3100);
-  
 }
 bootstrap();

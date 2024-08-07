@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository,QueryFailedError } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +15,7 @@ export class UsersService {
     this.logger.log(`create user ${JSON.stringify(createUserDto)}`);
     try {
       const userExists = await this.checkDuplicates(createUserDto.email);
-      if(userExists){
+      if (userExists) {
         throw new HttpException('User already exists', HttpStatus.CONFLICT);
       }
       const newUser = this.userRepo.create(createUserDto);
@@ -105,16 +105,16 @@ export class UsersService {
     }
   }
 
-  private async checkDuplicates(email:string){
+  private async checkDuplicates(email: string) {
     try {
-      const user = await this.userRepo.findOneBy({email})
-      if(user){
-        return true
-      }else{
+      const user = await this.userRepo.findOneBy({ email });
+      if (user) {
+        return true;
+      } else {
         return false;
       }
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

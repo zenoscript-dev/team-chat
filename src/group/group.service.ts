@@ -47,7 +47,7 @@ export class GroupService {
   async findOne(id: string) {
     this.logger.log(`find group by id ${id}`);
     try {
-      const result = await this.groupRepo.findOneBy({id});
+      const result = await this.groupRepo.findOneBy({ id });
       if (result) {
         return result;
       } else {
@@ -90,7 +90,7 @@ export class GroupService {
     try {
       const result = await this.groupRepo.findOne({ where: { id } });
       if (result) {
-        await this.groupRepo.delete({id});
+        await this.groupRepo.delete({ id });
       } else {
         throw new HttpException('Group does not exists', HttpStatus.NOT_FOUND);
       }
